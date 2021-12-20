@@ -73,7 +73,7 @@ namespace KenwoodTCPServerGUI
                 autoReConnect = Convert.ToBoolean(string.IsNullOrEmpty(GetValue("AutoReconnect", "Value"))
                     ? "false" : (GetValue("AutoReconnect", "Value")));
 
-                callSign = (GetValue("CallSign", "Value"));
+                callSign = GetValue("CallSign", "Value");
 
                 tcpPort = Convert.ToInt32(GetValue("TCPPort", "Port"));
                 radioPort = Convert.ToInt32(GetValue("RadioPort", "Port"));
@@ -141,6 +141,7 @@ namespace KenwoodTCPServerGUI
                 WritePrivateProfileString("TCPPort", "Port", TCPPortEntry.Text, this.iniFile);
                 WritePrivateProfileString("UserName", "Value", UserNameEntry.Text, this.iniFile);
                 WritePrivateProfileString("Password", "Value", PasswordEntry.Text, this.iniFile);
+                WritePrivateProfileString("CallSign", "Value", CallSign.Text, this.iniFile);
             }
         }
 
