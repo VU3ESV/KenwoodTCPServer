@@ -98,16 +98,15 @@ namespace KenwoodTCPServerGUI
                 Task.Run(async () =>
                 {
                     _kenwoodTcpServer = KenwoodTcpServer.Create(RadioIpAddressEntry.Text,
-                    radioPort,
-                    UserNameEntry.Text,
-                    PasswordEntry.Text,
-                    Kenwood.RadioType.TS990,
-                    Convert.ToInt32(TCPPortEntry.Text));
-
+                                                                radioPort,
+                                                                UserNameEntry.Text,
+                                                                PasswordEntry.Text,
+                                                                Kenwood.RadioType.TS990,
+                                                                Convert.ToInt32(TCPPortEntry.Text));                   
                     await _kenwoodTcpServer.InitializeAsync();
                 });
             }
-        }
+        }        
 
         [DllImport("kernel32", SetLastError = true)]
         private static extern int WritePrivateProfileString(
@@ -198,9 +197,19 @@ namespace KenwoodTCPServerGUI
 
         private void AutoReconnectEntry_CheckedChanged(object sender, EventArgs e)
         {
+            var autoReconnect = sender as CheckBox;
             if (File.Exists(iniFile))
             {
                 WritePrivateProfileString("AutoReconnect", "Value", AutoReconnectEntry.Checked.ToString(), this.iniFile);
+            }
+
+            if (autoReconnect.Checked)
+            {
+                _kenwoodTcpServer?.EnableAutoReConnect(true);
+            }
+            else
+            {
+                _kenwoodTcpServer?.EnableAutoReConnect(false);
             }
         }
 

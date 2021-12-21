@@ -72,7 +72,7 @@ namespace KenwoodTCP
         /// <param name="radioType">Radio type</param>
         /// <param name="tcpPort">TcpPort</param>
         /// <param name="backlog">backlog</param>
-        /// <returns> An instance of the Kenwood Radio</returns>
+        /// <returns> An instance of the KENWOOD Radio</returns>
         public static KenwoodTcpServer Create(string radioAddress,
                                               int port,
                                               string userName,
@@ -124,24 +124,72 @@ namespace KenwoodTCP
         private static async void ReceiveCallback(IAsyncResult ar)
         {
             Socket socket = (Socket)ar.AsyncState;
-            int received = socket.EndReceive(ar);
-            byte[] dataBuffer = new byte[received];
-            Array.Copy(_buffer, dataBuffer, received);
-            var data = Encoding.ASCII.GetString(dataBuffer);
-            var response = await _kenwoodRadio.SendAsync(data, cancellationToken: CancellationToken.None);
-            var responseData = Encoding.ASCII.GetBytes(response);
-            socket.BeginSend(responseData, 0, responseData.Length, SocketFlags.None, new AsyncCallback(SendCallback), socket);
-            socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
+            try
+            {
+                int received = socket.EndReceive(ar, out SocketError socketError);
+                if (received > 0)
+                {
+                    if (socketError == SocketError.Success)
+                    {
+                        byte[] dataBuffer = new byte[received];
+                        Array.Copy(_buffer, dataBuffer, received);
+                        var data = Encoding.ASCII.GetString(dataBuffer);
+                        var response = await _kenwoodRadio?.SendAsync(data, cancellationToken: CancellationToken.None);
+                        var responseData = Encoding.ASCII.GetBytes(response);
+                        if(socket.Connected)
+                        {
+                            socket?.BeginSend(responseData, 0, responseData.Length, SocketFlags.None, new AsyncCallback(SendCallback), socket);
+
+                            socket?.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
+                        }                        
+                    }
+                    else
+                    {
+                        _clientSockets.Remove(socket);
+                        Close(socket);
+                    }
+                }
+                else
+                {
+                    _clientSockets.Remove(socket);
+                    Close(socket);
+                }
+            }
+            catch (SocketException)
+            {
+                _clientSockets.Remove(socket);
+                Close(socket);
+            }
         }
 
         private static void SendCallback(IAsyncResult ar)
         {
             Socket socket = (Socket)ar.AsyncState;
-            socket.EndSend(ar);
+            try
+            {
+                socket.EndSend(ar, out SocketError socketError);
+                if (socketError != SocketError.Success)
+                {
+                    _clientSockets.Remove(socket);
+                    Close(socket);
+                }
+            }
+            catch (SocketException)
+            {
+                _clientSockets.Remove(socket);
+                Close(socket);
+            }
         }
+
+        private static void Close(Socket socket)
+        {
+            socket.Dispose();
+            socket.Close();
+        }       
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
             _autoConnectTimer?.Dispose();
             _kenwoodRadio?.DisconnectAsync().Wait();
             _kenwoodRadio?.Dispose();

@@ -85,6 +85,14 @@ namespace Kenwood
         /// <returns></returns>
         public async Task<bool> ConnectAsync(CancellationToken cancellationToken)
         {
+            if (_clientSocket == null)
+            {
+                _clientSocket = new Socket(AddressFamily.InterNetwork,
+                                           SocketType.Stream,
+                                           ProtocolType.Tcp);
+                _clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+                _clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            }
             while (!_clientSocket.Connected)
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -176,25 +184,43 @@ namespace Kenwood
             {
                 var receivePayLoad = string.Empty;
                 if (_clientSocket == null || _clientSocket.Connected == false)
-                {
+                {                    
                     return receivePayLoad;
                 }
 
                 byte[] sendBuffer = _encoding.GetBytes(command);
                 ArraySegment<byte> sendBufferClone = new ArraySegment<byte>(sendBuffer);
                 ArraySegment<byte> receiveBufferClone = new ArraySegment<byte>(new byte[1024]);
-
-                var sendLength = await _clientSocket.SendAsync(sendBufferClone, SocketFlags.None);
-                if (sendLength == 0)
+                try
                 {
-                    // Unable to send the data to radio, may be a network Error or Radio is Off :)
+                    var sendLength = await _clientSocket.SendAsync(sendBufferClone, SocketFlags.None);
+                    if (sendLength == 0)
+                    {
+                        // Unable to send the data to radio, may be a network Error or Radio is Off :)
+                        return receivePayLoad;
+                    }
+                }
+                catch (SocketException)
+                {
+                    Close(_clientSocket);
+                    _isConnected = false;
                     return receivePayLoad;
                 }
-                var receiveLength = await _clientSocket.ReceiveAsync(receiveBufferClone, SocketFlags.None);
-                byte[] data = new byte[receiveLength];
-                Array.Copy(receiveBufferClone.Array, data, receiveLength);
-                var receivedData = _encoding.GetString(data);
-                return receivedData;
+
+                try
+                {
+                    var receiveLength = await _clientSocket.ReceiveAsync(receiveBufferClone, SocketFlags.None);
+                    byte[] data = new byte[receiveLength];
+                    Array.Copy(receiveBufferClone.Array, data, receiveLength);
+                    var receivedData = _encoding.GetString(data);
+                    return receivedData;
+                }
+                catch (SocketException)
+                {
+                    Close(_clientSocket);
+                    _isConnected = false;
+                    return receivePayLoad;
+                }
             }
             catch (Exception)
             {
@@ -205,9 +231,16 @@ namespace Kenwood
         }
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
             _clientSocket?.Shutdown(SocketShutdown.Both);
             _clientSocket?.Close();
             _clientSocket?.Dispose();
+        }
+
+        private static void Close(Socket socket)
+        {
+            //socket.Dispose();
+            //socket.Disconnect(true);
         }
 
         private static bool ValidateCNResponse(string cnResponse)
