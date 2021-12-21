@@ -10,14 +10,14 @@ namespace Kenwood
 {
     public class KenwoodRadio : IKenwoodRadio, IDisposable
     {
-        private static Socket _clientSocket;
+        private volatile Socket _clientSocket;
         private static readonly Encoding _encoding = Encoding.Unicode;
         private readonly string _userName;
         private readonly string _password;
         private readonly IPAddress _radioAddress;
         private readonly int _port;
         private readonly RadioType _radioType;
-        private bool _isConnected;
+        private volatile bool _isConnected;
         private readonly IPEndPoint _ipEndpoint;
         private readonly bool _isAdmin = true;
         private const string ConnectCommand = "##CN;";
@@ -170,27 +170,36 @@ namespace Kenwood
 
         public async Task<string> SendAsync(string command, CancellationToken cancellationToken)
         {
-            var receivePayLoad = string.Empty;
-            if (_clientSocket == null || _clientSocket.Connected == false)
+            try
             {
-                return receivePayLoad;
+                var receivePayLoad = string.Empty;
+                if (_clientSocket == null || _clientSocket.Connected == false)
+                {
+                    return receivePayLoad;
+                }
+
+                byte[] sendBuffer = _encoding.GetBytes(command);
+                ArraySegment<byte> sendBufferClone = new ArraySegment<byte>(sendBuffer);
+                ArraySegment<byte> receiveBufferClone = new ArraySegment<byte>(new byte[1024]);
+
+                var sendLength = await _clientSocket.SendAsync(sendBufferClone, SocketFlags.None);
+                if (sendLength == 0)
+                {
+                    // Unable to send the data to radio, may be a network Error or Radio is Off :)
+                    return receivePayLoad;
+                }
+                var receiveLength = await _clientSocket.ReceiveAsync(receiveBufferClone, SocketFlags.None);
+                byte[] data = new byte[receiveLength];
+                Array.Copy(receiveBufferClone.Array, data, receiveLength);
+                var receivedData = _encoding.GetString(data);
+                return receivedData;
             }
-
-            byte[] sendBuffer = _encoding.GetBytes(command);
-            ArraySegment<byte> sendBufferClone = new ArraySegment<byte>(sendBuffer);
-            ArraySegment<byte> receiveBufferClone = new ArraySegment<byte>(new byte[1024]);
-
-            var sendLength = await _clientSocket.SendAsync(sendBufferClone, SocketFlags.None);
-            if (sendLength == 0)
+            catch (Exception)
             {
-                // Unable to send the data to radio, may be a network Error or Radio is Off :)
-                return receivePayLoad;
+                //Radio may be Off                 
+                _isConnected = false;
+                return string.Empty;
             }
-            var receiveLength = await _clientSocket.ReceiveAsync(receiveBufferClone, SocketFlags.None);
-            byte[] data = new byte[receiveLength];
-            Array.Copy(receiveBufferClone.Array, data, receiveLength);
-            var receivedData = _encoding.GetString(data);
-            return receivedData;
         }
         public void Dispose()
         {

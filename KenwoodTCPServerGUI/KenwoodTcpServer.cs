@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Kenwood;
 
 namespace KenwoodTCP
@@ -24,7 +25,7 @@ namespace KenwoodTCP
         private readonly int _tcpPort;
         private readonly int _backlog;
         private volatile bool _connected;
-        private readonly Timer _autoConnectTimer;
+        private readonly System.Threading.Timer _autoConnectTimer;
 
         /// <summary>
         /// Crete a new instance of the KenwoodRadio
@@ -59,7 +60,7 @@ namespace KenwoodTCP
 
             _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _clientSockets = new List<Socket>();
-            _autoConnectTimer = new Timer(new TimerCallback(AutoConnct), this, 10000, 10000);
+            _autoConnectTimer = new System.Threading.Timer(new TimerCallback(AutoConnct), this, 10000, 10000);
         }
 
         /// <summary>
@@ -171,23 +172,40 @@ namespace KenwoodTCP
             byte[] dataBuffer = new byte[received];
             Array.Copy(_buffer, dataBuffer, received);
             var data = Encoding.ASCII.GetString(dataBuffer);
-            var response = await _kenwoodRadio.SendAsync(data, cancellationToken: CancellationToken.None);
+            var response = await _kenwoodRadio?.SendAsync(data, cancellationToken: CancellationToken.None);
             var responseData = Encoding.ASCII.GetBytes(response);
-            socket.BeginSend(responseData, 0, responseData.Length, SocketFlags.None, new AsyncCallback(SendCallback), socket);
-            socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
+            try
+            {
+                socket.BeginSend(responseData, 0, responseData.Length, SocketFlags.None, new AsyncCallback(SendCallback), socket);
+            }
+            catch (Exception)
+            {
+            }
+            try
+            {
+                socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
+            }
+            catch (Exception)
+            {
+            }           
         }
 
         private static void SendCallback(IAsyncResult ar)
         {
             Socket socket = (Socket)ar.AsyncState;
             socket.EndSend(ar);
-        }       
+        }
 
         private async void AutoConnct(object state)
         {
-            if(!_connected)
+            if (!_connected)
             {
-                await InitializeAsync();
+                await InitializeAsync();              
+            }
+            
+            if(_kenwoodRadio.IsConnected == false)
+            {
+                Application.Restart();
             }
         }
     }
