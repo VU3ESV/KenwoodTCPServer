@@ -95,8 +95,8 @@ namespace KenwoodTCP
         {
             try
             {
-                var connected = await _kenwoodRadio.ConnectAsync(CancellationToken.None);
-                if (!connected)
+                _connected = await _kenwoodRadio.ConnectAsync(CancellationToken.None);
+                if (!_connected)
                 {
                     return false;
                 }
@@ -156,7 +156,7 @@ namespace KenwoodTCP
             _serverSocket?.Shutdown(SocketShutdown.Both);
             _serverSocket?.Close();
             _serverSocket?.Dispose();
-            
+
         }
 
         public Task EnableAutoReConnect(bool enable)
