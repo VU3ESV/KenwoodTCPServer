@@ -23,6 +23,12 @@ namespace Kenwood
         private const string ConnectCommand = "##CN;";
         private const string Ts990IdCommand = "##ID{0}{1}{2}{3};";
         private const string Ts890IdCommand = "##ID{0}{1}{2}{3}{4};";
+        private const string PsCommand = "PS;";
+        private const string AI2SetCommand = "AI2;";
+        private const string AIGetCommand = "AI;";
+        private readonly Timer _heartBeatTimer;
+        private volatile bool _isAICommandEnabled;
+
 
         /// <summary>
         /// Crete a new instance of the KenwoodRadio
@@ -41,6 +47,9 @@ namespace Kenwood
             _radioType = radioType;
             _ipEndpoint = new IPEndPoint(_radioAddress, _port == 0 ? 60000 : _port);
             _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _heartBeatTimer = new Timer(new TimerCallback(CheckHeartBeat), this, 5000, 5000);
+            /*If there are no communications for 10 seconds, the TCP /IP connection with the transceiver is terminated.
+            To avoid this the PS Command will be sent to Radio on every 5 seconds*/
         }
 
         /// <summary>
@@ -51,7 +60,7 @@ namespace Kenwood
         /// <param name="userName">UserName configured in ARCP990</param>
         /// <param name="password">Password configured in ARCP990</param>
         /// <param name="radioType">Radio type</param>
-        /// <returns> An instance of the Kenwood Radio</returns>
+        /// <returns> An instance of the KENWOOD Radio</returns>
         public static KenwoodRadio Create(string radioAddress,
                                           int port,
                                           string userName,
@@ -131,6 +140,19 @@ namespace Kenwood
                 return false;
             }
 
+            _isAICommandEnabled = true;
+            var aiSetResponse = await SendAsync(AI2SetCommand, cancellationToken);
+            if(!ValidateAISetResponse(aiSetResponse))
+            {
+                _isConnected = false;
+                return false;
+            }
+            var aiGetResponse = await SendAsync(AIGetCommand, cancellationToken);
+            if (!ValidateAIGetResponse(aiGetResponse))
+            {
+                _isConnected = false;
+                return false;
+            }
             _isConnected = true;
             return true;
         }
@@ -235,6 +257,8 @@ namespace Kenwood
             _clientSocket?.Shutdown(SocketShutdown.Both);
             _clientSocket?.Close();
             _clientSocket?.Dispose();
+            _heartBeatTimer.Dispose();
+
         }
 
         private static bool ValidateCNResponse(string cnResponse)
@@ -245,6 +269,37 @@ namespace Kenwood
         private static bool ValidateIdResponse(string idResponse)
         {
             return idResponse.Contains("##ID1");
+        }
+
+        private static bool ValidateAIGetResponse(string aiResponse)
+        {
+            return aiResponse.Contains("AI2");
+        }
+
+        private static bool ValidateAISetResponse(string aiResponse)
+        {
+            return !aiResponse.Contains("?");
+        }
+
+        private async void CheckHeartBeat(object state)
+        {
+            var psCommandResponse = await SendAsync(PsCommand, CancellationToken.None);
+            if (!ValidatePsCommandResponse(psCommandResponse))
+            {
+                _isConnected = false;
+            }
+        }
+
+        private bool ValidatePsCommandResponse(string psCommandResponse)
+        {
+            if (_isAICommandEnabled)
+            {
+                return !psCommandResponse.Contains("?");
+            }
+            else
+            {
+                return psCommandResponse.Contains("PS1");
+            }
         }
     }
 }
