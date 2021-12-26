@@ -115,7 +115,8 @@ namespace KenwoodTCP
                         Array.Copy(_buffer, dataBuffer, received);
                         var data = Encoding.ASCII.GetString(dataBuffer);
                         var response = await _kenwoodRadio?.SendAsync(data, cancellationToken: CancellationToken.None);
-                        var responseData = Encoding.ASCII.GetBytes(response);
+                        var responseData = !string.IsNullOrEmpty(response) ? Encoding.ASCII.GetBytes(response) 
+                                                                           : Encoding.ASCII.GetBytes(string.Empty);
                         if (socket.Connected)
                         {
                             socket?.BeginSend(responseData, 0, responseData.Length, SocketFlags.None, new AsyncCallback(SendCallback), socket);
