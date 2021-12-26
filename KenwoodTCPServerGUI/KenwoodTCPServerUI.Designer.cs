@@ -53,13 +53,19 @@ namespace KenwoodTCPServerGUI
             this.RadioTypeEntry = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.RadioComPorts = new System.Windows.Forms.ComboBox();
+            this.RadioBaudRate = new System.Windows.Forms.ComboBox();
+            this.ConnectivityMode = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // RadioIPAddress
             // 
             this.RadioIPAddress.AutoSize = true;
-            this.RadioIPAddress.Location = new System.Drawing.Point(16, 20);
+            this.RadioIPAddress.Location = new System.Drawing.Point(255, 23);
             this.RadioIPAddress.Name = "RadioIPAddress";
             this.RadioIPAddress.Size = new System.Drawing.Size(89, 13);
             this.RadioIPAddress.TabIndex = 0;
@@ -68,7 +74,7 @@ namespace KenwoodTCPServerGUI
             // RadioPort
             // 
             this.RadioPort.AutoSize = true;
-            this.RadioPort.Location = new System.Drawing.Point(16, 47);
+            this.RadioPort.Location = new System.Drawing.Point(255, 50);
             this.RadioPort.Name = "RadioPort";
             this.RadioPort.Size = new System.Drawing.Size(57, 13);
             this.RadioPort.TabIndex = 1;
@@ -77,7 +83,7 @@ namespace KenwoodTCPServerGUI
             // UserName
             // 
             this.UserName.AutoSize = true;
-            this.UserName.Location = new System.Drawing.Point(16, 74);
+            this.UserName.Location = new System.Drawing.Point(255, 77);
             this.UserName.Name = "UserName";
             this.UserName.Size = new System.Drawing.Size(60, 13);
             this.UserName.TabIndex = 2;
@@ -86,7 +92,7 @@ namespace KenwoodTCPServerGUI
             // Password
             // 
             this.Password.AutoSize = true;
-            this.Password.Location = new System.Drawing.Point(16, 101);
+            this.Password.Location = new System.Drawing.Point(255, 104);
             this.Password.Name = "Password";
             this.Password.Size = new System.Drawing.Size(53, 13);
             this.Password.TabIndex = 3;
@@ -94,14 +100,14 @@ namespace KenwoodTCPServerGUI
             // 
             // RadioIpAddressEntry
             // 
-            this.RadioIpAddressEntry.Location = new System.Drawing.Point(130, 17);
+            this.RadioIpAddressEntry.Location = new System.Drawing.Point(369, 20);
             this.RadioIpAddressEntry.Name = "RadioIpAddressEntry";
             this.RadioIpAddressEntry.Size = new System.Drawing.Size(116, 20);
             this.RadioIpAddressEntry.TabIndex = 5;
             // 
             // RadioPortEntry
             // 
-            this.RadioPortEntry.Location = new System.Drawing.Point(130, 44);
+            this.RadioPortEntry.Location = new System.Drawing.Point(369, 47);
             this.RadioPortEntry.Name = "RadioPortEntry";
             this.RadioPortEntry.Size = new System.Drawing.Size(116, 20);
             this.RadioPortEntry.TabIndex = 6;
@@ -109,14 +115,14 @@ namespace KenwoodTCPServerGUI
             // 
             // UserNameEntry
             // 
-            this.UserNameEntry.Location = new System.Drawing.Point(130, 71);
+            this.UserNameEntry.Location = new System.Drawing.Point(369, 74);
             this.UserNameEntry.Name = "UserNameEntry";
             this.UserNameEntry.Size = new System.Drawing.Size(116, 20);
             this.UserNameEntry.TabIndex = 7;
             // 
             // PasswordEntry
             // 
-            this.PasswordEntry.Location = new System.Drawing.Point(130, 98);
+            this.PasswordEntry.Location = new System.Drawing.Point(369, 101);
             this.PasswordEntry.Name = "PasswordEntry";
             this.PasswordEntry.Size = new System.Drawing.Size(116, 20);
             this.PasswordEntry.TabIndex = 8;
@@ -126,7 +132,7 @@ namespace KenwoodTCPServerGUI
             this.AutoReconnectEntry.AutoSize = true;
             this.AutoReconnectEntry.Checked = true;
             this.AutoReconnectEntry.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.AutoReconnectEntry.Location = new System.Drawing.Point(395, 46);
+            this.AutoReconnectEntry.Location = new System.Drawing.Point(618, 42);
             this.AutoReconnectEntry.Name = "AutoReconnectEntry";
             this.AutoReconnectEntry.Size = new System.Drawing.Size(104, 17);
             this.AutoReconnectEntry.TabIndex = 9;
@@ -138,7 +144,7 @@ namespace KenwoodTCPServerGUI
             // Info
             // 
             this.Info.AutoSize = true;
-            this.Info.Location = new System.Drawing.Point(317, 194);
+            this.Info.Location = new System.Drawing.Point(553, 234);
             this.Info.Name = "Info";
             this.Info.Size = new System.Drawing.Size(181, 13);
             this.Info.TabIndex = 10;
@@ -147,7 +153,7 @@ namespace KenwoodTCPServerGUI
             // VersionLabel
             // 
             this.VersionLabel.AutoSize = true;
-            this.VersionLabel.Location = new System.Drawing.Point(317, 216);
+            this.VersionLabel.Location = new System.Drawing.Point(553, 256);
             this.VersionLabel.Name = "VersionLabel";
             this.VersionLabel.Size = new System.Drawing.Size(45, 13);
             this.VersionLabel.TabIndex = 11;
@@ -156,7 +162,7 @@ namespace KenwoodTCPServerGUI
             // MinimizeOnStart
             // 
             this.MinimizeOnStart.AutoSize = true;
-            this.MinimizeOnStart.Location = new System.Drawing.Point(395, 69);
+            this.MinimizeOnStart.Location = new System.Drawing.Point(618, 65);
             this.MinimizeOnStart.Name = "MinimizeOnStart";
             this.MinimizeOnStart.Size = new System.Drawing.Size(108, 17);
             this.MinimizeOnStart.TabIndex = 13;
@@ -166,7 +172,7 @@ namespace KenwoodTCPServerGUI
             // 
             // Exit
             // 
-            this.Exit.Location = new System.Drawing.Point(395, 123);
+            this.Exit.Location = new System.Drawing.Point(618, 119);
             this.Exit.Name = "Exit";
             this.Exit.Size = new System.Drawing.Size(104, 20);
             this.Exit.TabIndex = 12;
@@ -176,7 +182,7 @@ namespace KenwoodTCPServerGUI
             // 
             // TCPPortEntry
             // 
-            this.TCPPortEntry.Location = new System.Drawing.Point(130, 124);
+            this.TCPPortEntry.Location = new System.Drawing.Point(369, 127);
             this.TCPPortEntry.Name = "TCPPortEntry";
             this.TCPPortEntry.Size = new System.Drawing.Size(116, 20);
             this.TCPPortEntry.TabIndex = 16;
@@ -185,7 +191,7 @@ namespace KenwoodTCPServerGUI
             // TCPPort
             // 
             this.TCPPort.AutoSize = true;
-            this.TCPPort.Location = new System.Drawing.Point(16, 127);
+            this.TCPPort.Location = new System.Drawing.Point(255, 130);
             this.TCPPort.Name = "TCPPort";
             this.TCPPort.Size = new System.Drawing.Size(50, 13);
             this.TCPPort.TabIndex = 15;
@@ -200,7 +206,7 @@ namespace KenwoodTCPServerGUI
             // 
             // TcpSave
             // 
-            this.TcpSave.Location = new System.Drawing.Point(395, 94);
+            this.TcpSave.Location = new System.Drawing.Point(618, 90);
             this.TcpSave.Name = "TcpSave";
             this.TcpSave.Size = new System.Drawing.Size(104, 20);
             this.TcpSave.TabIndex = 14;
@@ -211,7 +217,7 @@ namespace KenwoodTCPServerGUI
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(317, 24);
+            this.label1.Location = new System.Drawing.Point(540, 20);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(40, 13);
             this.label1.TabIndex = 17;
@@ -220,7 +226,7 @@ namespace KenwoodTCPServerGUI
             // CallSign
             // 
             this.CallSign.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.CallSign.Location = new System.Drawing.Point(395, 20);
+            this.CallSign.Location = new System.Drawing.Point(618, 16);
             this.CallSign.Name = "CallSign";
             this.CallSign.Size = new System.Drawing.Size(100, 20);
             this.CallSign.TabIndex = 18;
@@ -232,7 +238,7 @@ namespace KenwoodTCPServerGUI
             this.RadioTypeEntry.Items.AddRange(new object[] {
             "TS990",
             "TS890"});
-            this.RadioTypeEntry.Location = new System.Drawing.Point(130, 152);
+            this.RadioTypeEntry.Location = new System.Drawing.Point(369, 155);
             this.RadioTypeEntry.Name = "RadioTypeEntry";
             this.RadioTypeEntry.Size = new System.Drawing.Size(116, 21);
             this.RadioTypeEntry.TabIndex = 19;
@@ -241,7 +247,7 @@ namespace KenwoodTCPServerGUI
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 155);
+            this.label2.Location = new System.Drawing.Point(255, 158);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(59, 13);
             this.label2.TabIndex = 20;
@@ -250,17 +256,96 @@ namespace KenwoodTCPServerGUI
             // pictureBox1
             // 
             this.pictureBox1.Image = global::KenwoodTCPServerGUI.Properties.Resources.KenwoodIcon;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 179);
+            this.pictureBox1.Location = new System.Drawing.Point(248, 219);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(261, 54);
             this.pictureBox1.TabIndex = 21;
             this.pictureBox1.TabStop = false;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(11, 54);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(58, 13);
+            this.label7.TabIndex = 23;
+            this.label7.Text = "Baud Rate";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(11, 27);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(78, 13);
+            this.label8.TabIndex = 22;
+            this.label8.Text = "Radio ComPort";
+            // 
+            // RadioComPorts
+            // 
+            this.RadioComPorts.FormattingEnabled = true;
+            this.RadioComPorts.Location = new System.Drawing.Point(95, 24);
+            this.RadioComPorts.Name = "RadioComPorts";
+            this.RadioComPorts.Size = new System.Drawing.Size(116, 21);
+            this.RadioComPorts.TabIndex = 24;
+            this.RadioComPorts.SelectedIndexChanged += new System.EventHandler(this.RadioComPorts_SelectedIndexChanged);
+            // 
+            // RadioBaudRate
+            // 
+            this.RadioBaudRate.FormattingEnabled = true;
+            this.RadioBaudRate.Items.AddRange(new object[] {
+            "110",
+            "300",
+            "600",
+            "1200",
+            "2400",
+            "4800",
+            "9600",
+            "14400",
+            "19200",
+            "38400",
+            "56000",
+            "57600",
+            "115200",
+            "128000",
+            "256000"});
+            this.RadioBaudRate.Location = new System.Drawing.Point(95, 51);
+            this.RadioBaudRate.Name = "RadioBaudRate";
+            this.RadioBaudRate.Size = new System.Drawing.Size(116, 21);
+            this.RadioBaudRate.TabIndex = 25;
+            this.RadioBaudRate.SelectedIndexChanged += new System.EventHandler(this.RadioBaudRate_SelectedIndexChanged);
+            // 
+            // ConnectivityMode
+            // 
+            this.ConnectivityMode.FormattingEnabled = true;
+            this.ConnectivityMode.Items.AddRange(new object[] {
+            "Serial",
+            "LAN"});
+            this.ConnectivityMode.Location = new System.Drawing.Point(95, 162);
+            this.ConnectivityMode.Name = "ConnectivityMode";
+            this.ConnectivityMode.Size = new System.Drawing.Size(116, 21);
+            this.ConnectivityMode.TabIndex = 26;
+            this.ConnectivityMode.SelectedIndexChanged += new System.EventHandler(this.ConnectivityMode_SelectedIndexChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(11, 165);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(65, 13);
+            this.label3.TabIndex = 27;
+            this.label3.Text = "Connectivity";
+            // 
             // KenwoodTCPServerUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(529, 237);
+            this.ClientSize = new System.Drawing.Size(750, 276);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.ConnectivityMode);
+            this.Controls.Add(this.RadioBaudRate);
+            this.Controls.Add(this.RadioComPorts);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.RadioTypeEntry);
@@ -316,6 +401,12 @@ namespace KenwoodTCPServerGUI
         private System.Windows.Forms.ComboBox RadioTypeEntry;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox RadioComPorts;
+        private System.Windows.Forms.ComboBox RadioBaudRate;
+        private System.Windows.Forms.ComboBox ConnectivityMode;
+        private System.Windows.Forms.Label label3;
     }
 }
 

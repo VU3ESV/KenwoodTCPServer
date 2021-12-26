@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -20,16 +21,22 @@ namespace KenwoodTCPServerGUI
         private readonly Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         private IKenwoodTcpServer _kenwoodTcpServer;
         private readonly string iniFile = Path.GetDirectoryName(Application.ExecutablePath) + "\\KenwoodTCPServer.ini";
-        public string version = "1.0.0";
+        public string version = "1.1.0";
         private const string loopbackIP = "127.0.0.1";
         private const string defaultAdmin = "admin";
         private const string defaultPassword = "Kenwood";
+        private const int defaultBaudRate = 9600;
+        private const string defaultConnectivity = "Serial";
 
         public KenwoodTCPServerUI()
         {
             InitializeComponent();
+            var serialPortNames = SerialPort.GetPortNames();
             int radioPort = 0;
             int tcpPort = 0;
+            string serialPort = string.Empty;
+            int baudRate = 0;
+            string selectedConnectivity = string.Empty;
             string radioIpAddress = string.Empty;
             bool minimizeOnStart = false;
             bool autoReConnect = false;
@@ -43,6 +50,7 @@ namespace KenwoodTCPServerGUI
 
             if (File.Exists(iniFile))
             {
+
                 if (string.IsNullOrEmpty(GetValue("RadioIP", "IP")))
                 {
                     WritePrivateProfileString("RadioIP", "IP", RadioIpAddressEntry.Text, this.iniFile);
@@ -68,6 +76,16 @@ namespace KenwoodTCPServerGUI
                     WritePrivateProfileString("Password", "Value", PasswordEntry.Text, this.iniFile);
                 }
 
+                if (string.IsNullOrEmpty(GetValue("RadioBaudRate", "Value")))
+                {
+                    WritePrivateProfileString("RadioBaudRate", "Value", defaultBaudRate.ToString(), this.iniFile);
+                }
+
+                if (string.IsNullOrEmpty(GetValue("RadioConnectivity", "Value")))
+                {
+                    WritePrivateProfileString("RadioConnectivity", "Value", defaultConnectivity.ToString(), this.iniFile);
+                }
+
                 minimizeOnStart = Convert.ToBoolean(string.IsNullOrEmpty(GetValue("MinimizeOnStart", "Value"))
                     ? "false" : (GetValue("MinimizeOnStart", "Value")));
                 autoReConnect = Convert.ToBoolean(string.IsNullOrEmpty(GetValue("AutoReconnect", "Value"))
@@ -81,6 +99,9 @@ namespace KenwoodTCPServerGUI
                 userName = GetValue("UserName", "Value");
                 password = GetValue("Password", "Value");
                 radioType = GetValue("RadioType", "Value");
+                serialPort = GetValue("RadioSerialPort", "Value");
+                baudRate = Convert.ToInt32(GetValue("RadioBaudRate", "Value"));
+                selectedConnectivity = GetValue("RadioConnectivity", "Value");
             }
 
             RadioIpAddressEntry.Text = radioIpAddress == string.Empty ? loopbackIP : radioIpAddress;
@@ -92,21 +113,86 @@ namespace KenwoodTCPServerGUI
             MinimizeOnStart.Checked = minimizeOnStart;
             AutoReconnectEntry.Checked = autoReConnect;
             CallSign.Text = !string.IsNullOrEmpty(callSign) ? callSign : CallSign.Text;
-
-            if (RadioIpAddressEntry.Text != loopbackIP)
+            if (serialPort == string.Empty)
             {
-                Task.Run(async () =>
-                {
-                    _kenwoodTcpServer = KenwoodTcpServer.Create(RadioIpAddressEntry.Text,
-                                                                radioPort,
-                                                                UserNameEntry.Text,
-                                                                PasswordEntry.Text,
-                                                                Kenwood.RadioType.TS990,
-                                                                Convert.ToInt32(TCPPortEntry.Text));                   
-                    await _kenwoodTcpServer.InitializeAsync();
-                });
+                RadioComPorts.Items.AddRange(serialPortNames);
             }
-        }        
+            else
+            {
+                RadioComPorts.Items.AddRange(serialPortNames);
+                RadioComPorts.SelectedIndex = RadioComPorts.Items.IndexOf(serialPort);
+            }
+
+            if (baudRate == 0)
+            {
+                RadioBaudRate.SelectedIndex = RadioBaudRate.Items.IndexOf(defaultBaudRate);
+            }
+            else
+            {
+                RadioBaudRate.SelectedIndex = RadioBaudRate.Items.IndexOf(baudRate.ToString());
+            }
+
+            if (selectedConnectivity == string.Empty)
+            {
+                ConnectivityMode.SelectedIndex = ConnectivityMode.Items.IndexOf(defaultConnectivity);
+                selectedConnectivity = defaultConnectivity;
+            }
+            else
+            {
+                ConnectivityMode.SelectedIndex = ConnectivityMode.Items.IndexOf(selectedConnectivity);
+            }
+
+            if (selectedConnectivity == defaultConnectivity)
+            {
+                if (RadioComPorts.SelectedIndex != -1)
+                {
+                    Task.Run(async () =>
+                    {
+                        Kenwood.RadioPort radioPrt = new Kenwood.RadioPort()
+                        {
+                            Comport = serialPort,
+                            BaudRate = baudRate,
+                            DataBits = 8,
+                            DTR = "High",
+                            RTS = "High",
+                            Handshake = Handshake.RequestToSend,
+                            Parity = Parity.None,
+                            StopBits = StopBits.One,
+                            ReadTimeout = 500,
+                            WriteTimeout = 500
+                        };
+
+
+                        _kenwoodTcpServer = KenwoodSerialTcpServer.Create(radioPrt,
+                                                                          radioType == "TS990" ? Kenwood.RadioType.TS990
+                                                                                               : Kenwood.RadioType.TS890,
+                                                                          Convert.ToInt32(TCPPortEntry.Text));
+                        await _kenwoodTcpServer.InitializeAsync();
+                    });
+                }
+            }
+            else
+            {
+                if (RadioIpAddressEntry.Text != loopbackIP)
+                {
+                    Task.Run(async () =>
+                    {
+
+                        _kenwoodTcpServer = KenwoodTcpServer.Create(RadioIpAddressEntry.Text,
+                                                                    radioPort,
+                                                                    UserNameEntry.Text,
+                                                                    PasswordEntry.Text,
+                                                                    radioType == "TS990" ? Kenwood.RadioType.TS990
+                                                                                         : Kenwood.RadioType.TS890,
+                                                                    Convert.ToInt32(TCPPortEntry.Text));
+                        await _kenwoodTcpServer.InitializeAsync();
+                    });
+                }
+
+            }
+
+
+        }
 
         [DllImport("kernel32", SetLastError = true)]
         private static extern int WritePrivateProfileString(
@@ -116,13 +202,12 @@ namespace KenwoodTCPServerGUI
                                   string fileName);
 
         [DllImport("kernel32")]
-        private static extern int GetPrivateProfileString(
-          string section,
-          string key,
-          string defaultValue,
-          StringBuilder result,
-          int size,
-          string fileName);
+        private static extern int GetPrivateProfileString(string section,
+                                                          string key,
+                                                          string defaultValue,
+                                                          StringBuilder result,
+                                                          int size,
+                                                          string fileName);
 
         public string GetValue(string section, string entry)
         {
@@ -220,6 +305,36 @@ namespace KenwoodTCPServerGUI
             if (File.Exists(iniFile))
             {
                 WritePrivateProfileString("RadioType", "Value", selectedRadio, this.iniFile);
+            }
+        }
+
+        private void RadioComPorts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var radioComport = sender as ComboBox;
+            var selectedPort = radioComport.SelectedItem.ToString();
+            if (File.Exists(iniFile))
+            {
+                WritePrivateProfileString("RadioSerialPort", "Value", selectedPort, this.iniFile);
+            }
+        }
+
+        private void RadioBaudRate_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var radioBaudRate = sender as ComboBox;
+            var selectedBaud = radioBaudRate.SelectedItem.ToString();
+            if (File.Exists(iniFile))
+            {
+                WritePrivateProfileString("RadioBaudRate", "Value", selectedBaud, this.iniFile);
+            }
+        }
+
+        private void ConnectivityMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var connectivity = sender as ComboBox;
+            var selectedConnectivity = connectivity.SelectedItem.ToString();
+            if (File.Exists(iniFile))
+            {
+                WritePrivateProfileString("RadioConnectivity", "Value", selectedConnectivity, this.iniFile);
             }
         }
     }
