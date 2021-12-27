@@ -48,12 +48,14 @@ namespace Kenwood
                                          _radioPort.BaudRate,
                                          _radioPort.Parity,
                                          _radioPort.DataBits,
-                                         _radioPort.StopBits);
-            _serialPort.ReadTimeout = _radioPort.ReadTimeout;
-            _serialPort.WriteTimeout = _radioPort.WriteTimeout;
-            _serialPort.Handshake = _radioPort.Handshake;
-            _serialPort.DtrEnable = true;
-            _serialPort.RtsEnable = true;
+                                         _radioPort.StopBits)
+                                        {
+                                            ReadTimeout = _radioPort.ReadTimeout,
+                                            WriteTimeout = _radioPort.WriteTimeout,
+                                            Handshake = _radioPort.Handshake,
+                                            DtrEnable = true,
+                                            RtsEnable = true
+                                        };
             _serialPort.ErrorReceived += SerialPort_ErrorReceived;
 
             if (_serialPort.IsOpen)

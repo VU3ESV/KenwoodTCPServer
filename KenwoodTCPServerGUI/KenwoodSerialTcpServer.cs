@@ -15,7 +15,6 @@ namespace KenwoodTCP
         private static List<Socket> _clientSockets;
         private static readonly byte[] _buffer = new byte[1024];
         private static KenwoodSerialRadio _kenwoodRadio;
-        private static readonly Encoding _encoding = Encoding.Unicode;
         private readonly RadioPort _radioPort;       
         private readonly RadioType _radioType;
         private readonly int _tcpPort;

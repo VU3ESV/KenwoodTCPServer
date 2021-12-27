@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,12 +10,10 @@ namespace Kenwood
     {
 #pragma warning disable CA1416 // Validate platform compatibility
 
-        private static readonly Encoding _encoding = Encoding.Unicode;
         private readonly RadioPort _radioPort;
         private SerialPort _serialPort;
         private readonly RadioType _radioType;
         private volatile bool _isConnected;
-        private volatile string _serialData;
 
         private KenwoodSerialRadio(RadioPort radioPort,
                                    RadioType radioType)
@@ -48,19 +44,21 @@ namespace Kenwood
                               _radioPort.BaudRate,
                               _radioPort.Parity,
                               _radioPort.DataBits,
-                              _radioPort.StopBits);
-            _serialPort.ReadTimeout = _radioPort.ReadTimeout;
-            _serialPort.WriteTimeout = _radioPort.WriteTimeout;
-            _serialPort.Handshake = _radioPort.Handshake;
-            _serialPort.DtrEnable = true;
-            _serialPort.RtsEnable = true;
+                              _radioPort.StopBits)
+                            {
+                                ReadTimeout = _radioPort.ReadTimeout,
+                                WriteTimeout = _radioPort.WriteTimeout,
+                                Handshake = _radioPort.Handshake,
+                                DtrEnable = true,
+                                RtsEnable = true                
+                            };
+
             _serialPort.ErrorReceived += SerialPort_ErrorReceived;
 
             if (_serialPort.IsOpen)
             {
                 return Task.FromResult(_isConnected);
             }
-
 
             _serialPort.Open();
             if (_serialPort.IsOpen)
@@ -84,12 +82,12 @@ namespace Kenwood
                 case SerialError.RXParity:
                 case SerialError.Frame:
                 case SerialError.TXFull:
-                    _serialData = _serialPort.ReadExisting();
+                    _serialPort.ReadExisting();
                     _serialPort.Close();
                     _isConnected = false;
                     break;
             }
-        }        
+        }
 
         public Task DisconnectAsync()
         {
@@ -97,7 +95,6 @@ namespace Kenwood
 
             if (_serialPort.IsOpen)
             {
-
                 _serialPort.Close();
                 _isConnected = false;
             }
@@ -117,7 +114,6 @@ namespace Kenwood
                 return Task.FromResult(string.Empty);
             }
 
-            byte[] buffer = new byte[1024];
             if (_serialPort.IsOpen)
             {
                 _serialPort.Write(command);
