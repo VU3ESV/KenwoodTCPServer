@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KenwoodTcpSeverConsole", "KenwoodClient\KenwoodTcpSeverConsole.csproj", "{D9B71111-3E2A-4A53-A262-5786DAF9C4BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenwoodTcpSeverConsole", "KenwoodClient\KenwoodTcpSeverConsole.csproj", "{D9B71111-3E2A-4A53-A262-5786DAF9C4BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KenwoodNetworkCommandLibrary", "KenwoodNetworkCommandLibrary\KenwoodNetworkCommandLibrary.csproj", "{6F4A0926-FC8B-4C2D-9F40-7EE3976EC120}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenwoodNetworkCommandLibrary", "KenwoodNetworkCommandLibrary\KenwoodNetworkCommandLibrary.csproj", "{6F4A0926-FC8B-4C2D-9F40-7EE3976EC120}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KenwoodTCPServer", "KenwoodTCPServer\KenwoodTCPServer.csproj", "{D7D843BD-692C-4C5A-AC36-0C7B29FDDCB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KenwoodTCPServer", "KenwoodTCPServer\KenwoodTCPServer.csproj", "{D7D843BD-692C-4C5A-AC36-0C7B29FDDCB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KenwoodTCPServerGUI", "KenwoodTCPServerGUI\KenwoodTCPServerGUI.csproj", "{6E6103DF-231F-470F-A30A-FEED7E602A93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KenwoodSertialTCPConsole", "KenwoodSertialTCPConsole\KenwoodSertialTCPConsole.csproj", "{B71222BE-40D8-47F0-8BDA-4B83F9A23243}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{6E6103DF-231F-470F-A30A-FEED7E602A93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E6103DF-231F-470F-A30A-FEED7E602A93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E6103DF-231F-470F-A30A-FEED7E602A93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B71222BE-40D8-47F0-8BDA-4B83F9A23243}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B71222BE-40D8-47F0-8BDA-4B83F9A23243}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B71222BE-40D8-47F0-8BDA-4B83F9A23243}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B71222BE-40D8-47F0-8BDA-4B83F9A23243}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

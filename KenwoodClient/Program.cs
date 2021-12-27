@@ -14,29 +14,13 @@ namespace KenwoodClient
             var radioPort = 60000;
             var userName = "admin";
             var password = "Kenwood";
-            //IKenwoodTcpServer kenwoodTcpServer = KenwoodTcpServer.Create(radioIpAddress,
-            //                                                             radioPort,
-            //                                                             userName,
-            //                                                             password,
-            //                                                             RadioType.TS990,
-            //                                                             7355,
-            //                                                             100);
-
-            RadioPort radioComPort = new RadioPort
-            {
-                Comport = "COM19",
-                BaudRate = 115200,
-                DataBits = 8,
-                DTR = "High",
-                Parity = System.IO.Ports.Parity.None,
-                RTS = "High",
-                StopBits = System.IO.Ports.StopBits.One,
-                Handshake = System.IO.Ports.Handshake.RequestToSend,
-                ReadTimeout = 500,
-                WriteTimeout = 500
-            };
-
-            IKenwoodTcpServer kenwoodTcpServer = KenwoodSerialTcpServer.Create(radioComPort, RadioType.TS990);
+            IKenwoodTcpServer kenwoodTcpServer = KenwoodTcpServer.Create(radioIpAddress,
+                                                                         radioPort,
+                                                                         userName,
+                                                                         password,
+                                                                         RadioType.TS990,
+                                                                         7355,
+                                                                         100);
 
             var initialized = await kenwoodTcpServer.InitializeAsync();
             if(initialized)
