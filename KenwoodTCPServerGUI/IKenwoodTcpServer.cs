@@ -1,15 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace KenwoodTCP;
 
-namespace KenwoodTCP
+public interface IKenwoodTcpServer
 {
-    public interface IKenwoodTcpServer
-    {
-        void Dispose();
-        Task<bool> InitializeAsync();
+    void Dispose();
+    Task<bool> InitializeAsync();
 
-        Task EnableAutoReConnect(bool enable);
+    Task EnableAutoReConnect(bool enable);
 
-        event EventHandler<EventArgs> AppReStart;
-    }
+    event EventHandler<EventArgs> AppReStart;
 }

@@ -1,12 +1,11 @@
-﻿namespace Kenwood
+﻿namespace Kenwood;
+
+/// <summary>
+/// Supported RadioTypes
+/// </summary>
+public enum RadioType
 {
-    /// <summary>
-    /// Supported RadioTypes
-    /// </summary>
-    public enum RadioType
-    {
-        None, 
-        TS990,
-        TS890
-    }
+    None, 
+    TS990,
+    TS890
 }
