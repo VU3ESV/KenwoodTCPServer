@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.IO.Ports;
-using Kenwood;
+﻿using Kenwood;
 using KenwoodTCP;
+using System;
+using System.IO.Ports;
+using System.Threading.Tasks;
 
 namespace KenwoodSertialTCPConsole;
 
@@ -10,7 +10,7 @@ class Program
 {
     public static async Task Main(string[] args)
     {
-        Console.Title = "KenwoodSerialTcpServer by VU3ESV (For Windows System)";            
+        Console.Title = "KenwoodSerialTcpServer by VU3ESV (For Windows System)";
         RadioPort radioComPort = new()
         {
             Comport = "COM19",

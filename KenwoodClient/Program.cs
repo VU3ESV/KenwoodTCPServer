@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Kenwood;
+﻿using Kenwood;
 using KenwoodTCP;
+using System;
+using System.Threading.Tasks;
 
 namespace KenwoodClient;
 

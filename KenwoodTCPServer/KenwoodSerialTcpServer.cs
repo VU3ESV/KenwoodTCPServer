@@ -1,11 +1,11 @@
-﻿global using System;
+﻿global using Kenwood;
+global using System;
 global using System.Collections.Generic;
 global using System.Net;
 global using System.Net.Sockets;
 global using System.Text;
 global using System.Threading;
 global using System.Threading.Tasks;
-global using Kenwood;
 
 namespace KenwoodTCP;
 
@@ -15,7 +15,7 @@ public class KenwoodSerialTcpServer : IKenwoodTcpServer, IDisposable
     private static List<Socket> _clientSockets;
     private static readonly byte[] _buffer = new byte[1024];
     private static KenwoodSerialRadio _kenwoodRadio;
-    private readonly RadioPort _radioPort;       
+    private readonly RadioPort _radioPort;
     private readonly RadioType _radioType;
     private readonly int _tcpPort;
     private readonly int _backlog;
@@ -28,17 +28,17 @@ public class KenwoodSerialTcpServer : IKenwoodTcpServer, IDisposable
     /// <param name="radioPort">Radio Port Information</param>       
     /// <param name="radioType">Radio type</param>
 
-    private KenwoodSerialTcpServer(RadioPort radioPort,                                      
+    private KenwoodSerialTcpServer(RadioPort radioPort,
                                    RadioType radioType,
                                    int tcpPort,
                                    int backlog)
     {
         _radioPort = radioPort;
-        
+
         _radioType = radioType;
         _tcpPort = tcpPort;
         _backlog = backlog;
-        _kenwoodRadio = KenwoodSerialRadio.Create(_radioPort,                                                      
+        _kenwoodRadio = KenwoodSerialRadio.Create(_radioPort,
                                                   _radioType);
 
         _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -54,12 +54,12 @@ public class KenwoodSerialTcpServer : IKenwoodTcpServer, IDisposable
     /// <param name="tcpPort">TcpPort</param>
     /// <param name="backlog">backlog</param>
     /// <returns> An instance of the KENWOOD Radio</returns>
-    public static KenwoodSerialTcpServer Create(RadioPort radioPort,                                                   
+    public static KenwoodSerialTcpServer Create(RadioPort radioPort,
                                                 RadioType radioType,
                                                 int tcpPort = 7355,
                                                 int backlog = 100)
     {
-        KenwoodSerialTcpServer kenwoodTcpServer = new(radioPort,                                                         
+        KenwoodSerialTcpServer kenwoodTcpServer = new(radioPort,
                                                       radioType,
                                                       tcpPort,
                                                       backlog);
@@ -110,7 +110,7 @@ public class KenwoodSerialTcpServer : IKenwoodTcpServer, IDisposable
                     Array.Copy(_buffer, dataBuffer, received);
                     var data = Encoding.ASCII.GetString(dataBuffer);
                     var response = await _kenwoodRadio?.SendAsync(data, cancellationToken: CancellationToken.None);
-                    var responseData = !string.IsNullOrEmpty(response) ? Encoding.ASCII.GetBytes(response) 
+                    var responseData = !string.IsNullOrEmpty(response) ? Encoding.ASCII.GetBytes(response)
                                                                        : Encoding.ASCII.GetBytes(string.Empty);
                     if (socket.Connected)
                     {

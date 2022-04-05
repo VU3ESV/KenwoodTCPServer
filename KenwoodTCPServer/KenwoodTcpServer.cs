@@ -127,12 +127,12 @@ public class KenwoodTcpServer : IKenwoodTcpServer, IDisposable
                     var data = Encoding.ASCII.GetString(dataBuffer);
                     var response = await _kenwoodRadio?.SendAsync(data, cancellationToken: CancellationToken.None);
                     var responseData = Encoding.ASCII.GetBytes(response);
-                    if(socket.Connected)
+                    if (socket.Connected)
                     {
                         socket?.BeginSend(responseData, 0, responseData.Length, SocketFlags.None, new AsyncCallback(SendCallback), socket);
 
                         socket?.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
-                    }                        
+                    }
                 }
                 else
                 {
@@ -176,7 +176,7 @@ public class KenwoodTcpServer : IKenwoodTcpServer, IDisposable
     {
         socket.Dispose();
         socket.Close();
-    }       
+    }
 
     public void Dispose()
     {

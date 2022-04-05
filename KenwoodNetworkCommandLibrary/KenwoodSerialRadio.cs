@@ -41,13 +41,13 @@ public class KenwoodSerialRadio : IKenwoodRadio, IDisposable
                           _radioPort.Parity,
                           _radioPort.DataBits,
                           _radioPort.StopBits)
-                        {
-                            ReadTimeout = _radioPort.ReadTimeout,
-                            WriteTimeout = _radioPort.WriteTimeout,
-                            Handshake = _radioPort.Handshake,
-                            DtrEnable = true,
-                            RtsEnable = true                
-                        };
+        {
+            ReadTimeout = _radioPort.ReadTimeout,
+            WriteTimeout = _radioPort.WriteTimeout,
+            Handshake = _radioPort.Handshake,
+            DtrEnable = true,
+            RtsEnable = true
+        };
 
         _serialPort.ErrorReceived += SerialPort_ErrorReceived;
 

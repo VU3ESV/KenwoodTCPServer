@@ -8,7 +8,7 @@ public class KenwoodSerialTcpServer : IKenwoodTcpServer, IDisposable
     private static List<Socket> _clientSockets;
     private static readonly byte[] _buffer = new byte[1024];
     private static KenwoodSerialRadio _kenwoodRadio;
-    private readonly RadioPort _radioPort;       
+    private readonly RadioPort _radioPort;
     private readonly RadioType _radioType;
     private readonly int _tcpPort;
     private readonly int _backlog;
@@ -105,7 +105,7 @@ public class KenwoodSerialTcpServer : IKenwoodTcpServer, IDisposable
                     Array.Copy(_buffer, dataBuffer, received);
                     var data = Encoding.ASCII.GetString(dataBuffer);
                     var response = await _kenwoodRadio?.SendAsync(data, cancellationToken: CancellationToken.None);
-                    var responseData = !string.IsNullOrEmpty(response)? Encoding.ASCII.GetBytes(response)
+                    var responseData = !string.IsNullOrEmpty(response) ? Encoding.ASCII.GetBytes(response)
                                                                       : Encoding.ASCII.GetBytes(string.Empty);
                     if (socket.Connected)
                     {

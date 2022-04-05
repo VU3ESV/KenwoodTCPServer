@@ -1,10 +1,10 @@
 ﻿global using System;
-global using System.Text;
+global using System.Collections.Generic;
 global using System.Net;
 global using System.Net.Sockets;
-global using System.Threading.Tasks;
+global using System.Text;
 global using System.Threading;
-global using System.Collections.Generic;
+global using System.Threading.Tasks;
 
 namespace Kenwood;
 
@@ -149,7 +149,7 @@ public class KenwoodRadio : IKenwoodRadio, IDisposable
             _isConnecting = false;
             return false;
         }
-                   
+
         _isAICommandEnabled = true;
         var aiGetResponse = await SendAsync(AIGetCommand, cancellationToken);
         if (!ValidateAIGetResponse(aiGetResponse))
@@ -161,7 +161,7 @@ public class KenwoodRadio : IKenwoodRadio, IDisposable
                 _isConnecting = false;
                 return false;
             }
-        }     
+        }
 
         _isConnecting = false;
         _isConnected = true;
@@ -292,7 +292,7 @@ public class KenwoodRadio : IKenwoodRadio, IDisposable
     {
         _ = Task.Run(async () =>
         {
-            if(_isConnecting)
+            if (_isConnecting)
             {
                 return;
             }

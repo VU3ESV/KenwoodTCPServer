@@ -1,9 +1,9 @@
-﻿using System.IO;
+﻿using KenwoodTCP;
+using System.IO;
 using System.IO.Ports;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using KenwoodTCP;
 
 namespace KenwoodTCPServerGUI;
 

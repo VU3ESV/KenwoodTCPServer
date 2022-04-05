@@ -5,7 +5,7 @@
 /// </summary>
 public enum RadioType
 {
-    None, 
+    None,
     TS990,
     TS890
 }
