@@ -23,7 +23,7 @@ public class KenwoodSerialRadio : IKenwoodRadio, IDisposable
     public static KenwoodSerialRadio Create(RadioPort radioPort,
                                             RadioType radioType)
     {
-        KenwoodSerialRadio kenwoodSerialRadio = new KenwoodSerialRadio(radioPort, radioType);
+        KenwoodSerialRadio kenwoodSerialRadio = new(radioPort, radioType);
         return kenwoodSerialRadio;
     }
 

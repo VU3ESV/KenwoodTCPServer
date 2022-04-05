@@ -75,11 +75,11 @@ public class KenwoodRadio : IKenwoodRadio, IDisposable
                                       string password,
                                       RadioType radioType)
     {
-        KenwoodRadio kenwoodRadio = new KenwoodRadio(radioAddress,
-                                                     port,
-                                                     userName,
-                                                     password,
-                                                     radioType);
+        KenwoodRadio kenwoodRadio = new(radioAddress,
+                                        port,
+                                        userName,
+                                        password,
+                                        radioType);
         return kenwoodRadio;
     }
 
@@ -154,7 +154,7 @@ public class KenwoodRadio : IKenwoodRadio, IDisposable
         var aiGetResponse = await SendAsync(AIGetCommand, cancellationToken);
         if (!ValidateAIGetResponse(aiGetResponse))
         {
-            var aiSetResponse = await SendAsync(AI2SetCommand, cancellationToken);
+            var aiSetResponse = await SendAsync(AI2SetCommand, cancellationToken).ConfigureAwait(false);
             if (!ValidateAISetResponse(aiSetResponse))
             {
                 _isConnected = false;
@@ -197,7 +197,7 @@ public class KenwoodRadio : IKenwoodRadio, IDisposable
 
         foreach (var command in commands)
         {
-            var receivedData = await SendAsync(command, cancellationToken);
+            var receivedData = await SendAsync(command, cancellationToken).ConfigureAwait(false);
             receivePayLoad.Add(receivedData);
         }
 
@@ -215,11 +215,11 @@ public class KenwoodRadio : IKenwoodRadio, IDisposable
             }
 
             byte[] sendBuffer = _encoding.GetBytes(command);
-            ArraySegment<byte> sendBufferClone = new ArraySegment<byte>(sendBuffer);
-            ArraySegment<byte> receiveBufferClone = new ArraySegment<byte>(new byte[1024]);
+            ArraySegment<byte> sendBufferClone = new(sendBuffer);
+            ArraySegment<byte> receiveBufferClone = new(new byte[1024]);
             try
             {
-                var sendLength = await _clientSocket.SendAsync(sendBufferClone, SocketFlags.None);
+                var sendLength = await _clientSocket.SendAsync(sendBufferClone, SocketFlags.None).ConfigureAwait(false);
                 if (sendLength == 0)
                 {
                     // Unable to send the data to radio, may be a network Error or Radio is Off :)
@@ -235,7 +235,7 @@ public class KenwoodRadio : IKenwoodRadio, IDisposable
 
             try
             {
-                var receiveLength = await _clientSocket.ReceiveAsync(receiveBufferClone, SocketFlags.None);
+                var receiveLength = await _clientSocket.ReceiveAsync(receiveBufferClone, SocketFlags.None).ConfigureAwait(false);
                 byte[] data = new byte[receiveLength];
                 Array.Copy(receiveBufferClone.Array, data, receiveLength);
                 var receivedData = _encoding.GetString(data);
@@ -296,7 +296,7 @@ public class KenwoodRadio : IKenwoodRadio, IDisposable
             {
                 return;
             }
-            var psCommandResponse = await SendAsync(PsCommand, CancellationToken.None);
+            var psCommandResponse = await SendAsync(PsCommand, CancellationToken.None).ConfigureAwait(false);
             if (!ValidatePsCommandResponse(psCommandResponse))
             {
                 _isConnected = false;

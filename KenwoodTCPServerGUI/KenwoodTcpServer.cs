@@ -77,7 +77,7 @@ public class KenwoodTcpServer : IKenwoodTcpServer, IDisposable
                                           int tcpPort = 7355,
                                           int backlog = 100)
     {
-        KenwoodTcpServer kenwoodTcpServer = new KenwoodTcpServer(radioAddress,
+        KenwoodTcpServer kenwoodTcpServer = new(radioAddress,
                                                                  port,
                                                                  userName,
                                                                  password,
@@ -238,6 +238,7 @@ public class KenwoodTcpServer : IKenwoodTcpServer, IDisposable
 
         if (_kenwoodRadio.IsConnected == false)
         {
+            //ToDo: Ugly workaround, needs to find a better solution
             Application.Restart();
         }
     }

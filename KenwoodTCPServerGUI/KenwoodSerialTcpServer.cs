@@ -1,4 +1,4 @@
-﻿using Kenwood;
+﻿global using Kenwood;
 
 namespace KenwoodTCP;
 
@@ -54,7 +54,7 @@ public class KenwoodSerialTcpServer : IKenwoodTcpServer, IDisposable
                                                 int tcpPort = 7355,
                                                 int backlog = 100)
     {
-        KenwoodSerialTcpServer kenwoodTcpServer = new KenwoodSerialTcpServer(radioPort,
+        KenwoodSerialTcpServer kenwoodTcpServer = new(radioPort,
                                                                              radioType,
                                                                              tcpPort,
                                                                              backlog);

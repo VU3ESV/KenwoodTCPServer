@@ -140,7 +140,7 @@ public partial class KenwoodTCPServerUI : Form
             {
                 Task.Run(async () =>
                 {
-                    Kenwood.RadioPort radioPrt = new Kenwood.RadioPort()
+                    Kenwood.RadioPort radioPrt = new()
                     {
                         Comport = serialPort,
                         BaudRate = baudRate,
@@ -203,7 +203,7 @@ public partial class KenwoodTCPServerUI : Form
 
     public string GetValue(string section, string entry)
     {
-        StringBuilder result = new StringBuilder(1000);
+        StringBuilder result = new(1000);
         GetPrivateProfileString(section, entry, "", result, 1000, this.iniFile);
         return result.ToString();
     }
