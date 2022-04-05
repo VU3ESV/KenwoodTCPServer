@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("VU3ESV")]
 [assembly: AssemblyProduct("KenwoodTCPServerGUI")]
-[assembly: AssemblyCopyright("Copyright VU3ESV©  2021")]
+[assembly: AssemblyCopyright("Copyright VU3ESV©  2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -1,21 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace Kenwood;
 
-namespace Kenwood
+public interface IKenwoodRadio
 {
-    public interface IKenwoodRadio
-    {
-        Task<bool> ConnectAsync(CancellationToken cancellationToken);
+    Task<bool> ConnectAsync(CancellationToken cancellationToken);
 
-        Task<string> SendAsync(string command, CancellationToken cancellationToken);
+    Task<string> SendAsync(string command, CancellationToken cancellationToken);
 
-        Task<List<string>> SendAsync(List<string> commands, CancellationToken cancellationToken);
+    Task<List<string>> SendAsync(List<string> commands, CancellationToken cancellationToken);
 
-        Task DisconnectAsync();
+    Task DisconnectAsync();
 
-        RadioType RadioType { get; }
+    RadioType RadioType { get; }
 
-        bool IsConnected { get; }
-    }
+    bool IsConnected { get; }
 }

@@ -28,7 +28,7 @@ namespace Kenwood
         private const string AIGetCommand = "AI;";
         private readonly Timer _heartBeatTimer;
         private volatile bool _isAICommandEnabled;
-
+        private volatile bool _isConnecting = false;
 
         /// <summary>
         /// Crete a new instance of the KenwoodRadio
@@ -102,6 +102,7 @@ namespace Kenwood
                 _clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
                 _clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             }
+            _isConnecting = true;
             while (!_clientSocket.Connected)
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -124,6 +125,7 @@ namespace Kenwood
             if (!ValidateCNResponse(connectResponse))
             {
                 _isConnected = false;
+                _isConnecting = false;
                 return false;
             }
 
@@ -144,25 +146,24 @@ namespace Kenwood
             if (!ValidateIdResponse(idResponse))
             {
                 _isConnected = false;
+                _isConnecting = false;
                 return false;
             }
-
-
+                       
             _isAICommandEnabled = true;
-            var aiSetResponse = await SendAsync(AI2SetCommand, cancellationToken);
-            if (!ValidateAISetResponse(aiSetResponse))
-            {
-                _isConnected = false;
-                return false;
-            }
             var aiGetResponse = await SendAsync(AIGetCommand, cancellationToken);
             if (!ValidateAIGetResponse(aiGetResponse))
             {
-                _isConnected = false;
-                return false;
-            }
+                var aiSetResponse = await SendAsync(AI2SetCommand, cancellationToken);
+                if (!ValidateAISetResponse(aiSetResponse))
+                {
+                    _isConnected = false;
+                    _isConnecting = false;
+                    return false;
+                }
+            }     
 
-
+            _isConnecting = false;
             _isConnected = true;
             return true;
         }
@@ -291,6 +292,10 @@ namespace Kenwood
         {
             _ = Task.Run(async () =>
             {
+                if(_isConnecting)
+                {
+                    return;
+                }
                 var psCommandResponse = await SendAsync(PsCommand, CancellationToken.None);
                 if (!ValidatePsCommandResponse(psCommandResponse))
                 {
